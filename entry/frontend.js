@@ -1,6 +1,7 @@
 import R from 'ramda'
 
 import saga from '../saga'
+import middleware from '../middleware'
 import { buildLayersReducer } from '../layers-reducer-builder'
 import { buildFeaturesReducer } from '../features-reducer-builder'
 
@@ -17,27 +18,6 @@ function buildFieldsOptions(options) {
 
 const OPERATIONS = ['!=', '==', '>', '<']
 const OPERATIONS_SELECT_OPTIONS = OPERATIONS.map(value => ({ value, label: value }))
-
-// function buildDynamicComponents(state) {
-//   const config = (state.pluginConfigs || {}).virtualLayers
-//   const items = config && config.items ? config.items : []
-//
-//   return items.map((item) => {
-//     const sourceLayer = state.layers[item.sourceLayerKey]
-//     return {
-//       component: LayerListItem,
-//       position: 'layerItem',
-//       props: {
-//         item
-//       },
-//       options: {
-//         order: sourceLayer.order + 1,
-//         categoryKey: sourceLayer.layer_group_key
-//       }
-//     }
-//   })
-// }
-
 
 export default {
   name: 'Virtual Layers',
@@ -68,12 +48,11 @@ export default {
     }
   ],
   connects: {
-    // components: [buildDynamicComponents],
-    // saga,
+    saga,
+    middleware,
     replaceReducers: [
       { replacer: buildLayersReducer, path: ['layers'] },
       { replacer: buildFeaturesReducer, path: ['features'] }
-      // { replacer: buildFeaturesReducer, path: ['features'] }
     ]
   }
 }

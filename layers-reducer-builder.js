@@ -1,6 +1,7 @@
 import R from 'ramda'
 
 import { DATA_FETCH_SUCCESS } from 'core/frontend/actions/data-actions'
+import { buildVirtualLayerKey } from './utils'
 
 export function buildLayersReducer(previousReducer) {
   return (state_, action) => {
@@ -13,7 +14,8 @@ export function buildLayersReducer(previousReducer) {
       const newState = { ...state }
       config.properties.items.forEach((item, index) => {
         const sourceLayer = state[item.sourceLayerKey]
-        const key = `vl-${index}-${sourceLayer.key}`
+        const key = buildVirtualLayerKey(index, sourceLayer.key)
+
         newState[key] = {
           ...sourceLayer,
           key,

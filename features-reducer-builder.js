@@ -3,6 +3,8 @@ import R from 'ramda'
 import { DATA_FETCH_SUCCESS } from 'core/frontend/actions/data-actions'
 import Feature from 'core/shared/models/feature'
 
+import { buildVirtualFeature } from './utils'
+
 function buildCheckFilter(filters, sourceLayer) {
   return R.pipe(
     R.prop('properties'),
@@ -38,12 +40,8 @@ export function buildFeaturesReducer(previousReducer) {
           .filter(feature => feature.properties.layer_key === sourceLayerKey)
           .filter(checkFilter)
           .forEach((feature) => {
-            const id = `vl-${index}-${feature.id}`
-            newState[id] = {
-              ...feature,
-              id,
-              properties: { ...feature.properties, layer_key: `vl-${index}-${sourceLayerKey}` }
-            }
+            const virtualFeature = buildVirtualFeature(feature, item, index)
+            newState[virtualFeature.id] = virtualFeature
           })
       })
 
