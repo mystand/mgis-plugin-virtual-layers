@@ -10,6 +10,7 @@ export function buildLayersReducer(previousReducer) {
     switch (action.type) {
     case DATA_FETCH_SUCCESS: {
       const config = R.find(x => x.key === 'virtualLayers', action.data.pluginConfigs)
+      if (!config) return state
 
       const newState = { ...state }
       config.properties.items.forEach((item, index) => {

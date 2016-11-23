@@ -11,6 +11,7 @@ function buildCheckFilter(filters, sourceLayer) {
     R.allPass(filters.map((filter) => {
       const value = Feature.castPropertyType(sourceLayer.attributes[filter.property], filter.value)
 
+      if (filter.operator === 'present') return properties => R.isPresent(properties[filter.property])
       if (filter.operator === '==') return R.propEq(filter.property, value)
       if (filter.operator === '!=') return properties => !R.propEq(filter.property, value, properties)
       if (filter.operator === '>') return properties => properties[filter.property] > value
@@ -27,6 +28,7 @@ export function buildFeaturesReducer(previousReducer) {
     switch (action.type) {
     case DATA_FETCH_SUCCESS: {
       const config = R.find(x => x.key === 'virtualLayers', action.data.pluginConfigs)
+      if (!config) return state
       const items = config.properties.items
       const features = R.values(state)
 

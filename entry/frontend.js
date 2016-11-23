@@ -16,8 +16,13 @@ function buildFieldsOptions(options) {
   return R.keys(attributes).map(key => ({ value: key, label: attributes[key].label }))
 }
 
-const OPERATIONS = ['!=', '==', '>', '<']
-const OPERATIONS_SELECT_OPTIONS = OPERATIONS.map(value => ({ value, label: value }))
+const OPERATIONS_SELECT_OPTIONS = [
+  { value: '!=', label: '!=' },
+  { value: '==', label: '==' },
+  { value: '>', label: '>' },
+  { value: '<', label: '<' },
+  { value: 'present', label: 'Не пустое' }
+]
 
 export default {
   name: 'Virtual Layers',
