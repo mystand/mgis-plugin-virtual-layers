@@ -9,7 +9,12 @@ function buildCheckFilter(filters, sourceLayer) {
   return R.pipe(
     R.prop('properties'),
     R.allPass(filters.map((filter) => {
-      const value = Feature.castPropertyType(sourceLayer.attributes[filter.property], filter.value)
+      const definition = sourceLayer.attributes[filter.property]
+      if (R.isNil(definition)) {
+        console.error(`no property "${filter.property}" in layer: "${sourceLayer.key}"`)
+        return () => false
+      }
+      const value = Feature.castPropertyType(definition, filter.value)
 
       if (filter.operator === 'present') return properties => R.isPresent(properties[filter.property])
       if (filter.operator === '==') return R.propEq(filter.property, value)
@@ -34,13 +39,13 @@ export function buildFeaturesReducer(previousReducer) {
 
       const newState = { ...state }
       items.forEach((item, index) => {
-        const sourceLayerKey = item.sourceLayerKey
+        const { sourceLayerKey } = item
         const sourceLayer = R.find(layer => layer.key === sourceLayerKey, action.data.layers)
-        const checkFilter = buildCheckFilter(item.filters, sourceLayer)
+        const checkFilterFn = buildCheckFilter(item.filters, sourceLayer)
 
         features
           .filter(feature => feature.properties.layer_key === sourceLayerKey)
-          .filter(checkFilter)
+          .filter(checkFilterFn)
           .forEach((feature) => {
             const virtualFeature = buildVirtualFeature(feature, item, index)
             newState[virtualFeature.id] = virtualFeature

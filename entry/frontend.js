@@ -4,15 +4,11 @@ import saga from '../saga'
 import middleware from '../middleware'
 import { buildLayersReducer } from '../layers-reducer-builder'
 import { buildFeaturesReducer } from '../features-reducer-builder'
+import FieldsInput from '../components/fields-input/FieldsInput'
+import { getAttributesFromBuildOptions } from '../utils'
 
 function buildFieldsOptions(options) {
-  const { values, fieldPath, directories: { layers } } = options
-  const sourceLayerKeyFieldPath = [fieldPath[0], fieldPath[1], 'sourceLayerKey']
-  const sourceLayerKeyValue = R.path(sourceLayerKeyFieldPath, values)
-
-  if (R.isNil(sourceLayerKeyValue)) return []
-
-  const attributes = R.find(x => x.key === sourceLayerKeyValue, layers).attributes
+  const attributes = getAttributesFromBuildOptions(options)
   return R.keys(attributes).map(key => ({ value: key, label: attributes[key].label }))
 }
 
@@ -33,9 +29,9 @@ export default {
       type: 'array',
       item: {
         fields: [
-          { key: 'name', label: 'Название', type: 'string' },
-          { key: 'order', label: 'Порядок', type: 'string' },
-          { key: 'sourceLayerKey', label: 'Первичный слой', type: 'select', options: 'layers' },
+          { key: 'sourceLayerKey', label: 'Исходный слой', type: 'select', options: 'layers' },
+          { key: 'targetLayerKey', label: 'Слой назначения', type: 'select', options: 'layers' },
+          { key: 'fields', label: 'Отображаемые поля', type: FieldsInput },
           {
             key: 'filters',
             label: 'Условия',
