@@ -12,20 +12,21 @@ const FieldsInput = (props) => {
     onChange(R.toggle(key, value))
   }
 
+
   return (
     <div>
       <div>Отображаемые поля</div>
       <div style={ { marginLeft: '20px', marginBottom: '20px' } }>
         {
-          R.values(attributes).map((attribute) => {
-            const id = `fields-${attribute.key}`
+          R.toPairs(attributes).map(([key, attribute]) => {
+            const id = `fields-${key}`
             return (
-              <div key={ attribute.key }>
+              <div key={ key }>
                 <input
                   id={ id }
                   type='checkbox'
-                  onChange={ R.partial(onCheckboxChange, [attribute.key]) }
-                  checked={ R.contains(attribute.key, value) }
+                  onChange={ R.partial(onCheckboxChange, [key]) }
+                  checked={ R.contains(key, value) }
                 />
                 <label htmlFor={ id }> {attribute.label} </label>
               </div>

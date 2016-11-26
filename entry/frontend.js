@@ -12,6 +12,8 @@ function buildFieldsOptions(options) {
   return R.keys(attributes).map(key => ({ value: key, label: attributes[key].label }))
 }
 
+// function buildExceptiFeatures
+
 const OPERATIONS_SELECT_OPTIONS = [
   { value: '!=', label: '!=' },
   { value: '==', label: '==' },
@@ -41,6 +43,16 @@ export default {
                 { key: 'property', label: 'Поле', type: 'select', options: buildFieldsOptions },
                 { key: 'operator', label: 'Оператор', type: 'select', options: OPERATIONS_SELECT_OPTIONS },
                 { key: 'value', label: 'Значение', type: 'string' }
+              ]
+            }
+          },
+          {
+            key: 'exceptions',
+            label: 'Исключения',
+            type: 'array',
+            item: {
+              fields: [
+                { key: 'featureId', label: 'Id объекта', type: 'string' }
               ]
             }
           }

@@ -5,7 +5,7 @@ import Feature from 'core/shared/models/feature'
 
 import { buildVirtualFeature } from './utils'
 
-function buildCheckFilter(filters, sourceLayer) {
+function buildFilterMatch(filters, sourceLayer) {
   return R.pipe(
     R.prop('properties'),
     R.allPass(filters.map((filter) => {
@@ -41,11 +41,13 @@ export function buildFeaturesReducer(previousReducer) {
       items.forEach((item, index) => {
         const { sourceLayerKey } = item
         const sourceLayer = R.find(layer => layer.key === sourceLayerKey, action.data.layers)
-        const checkFilterFn = buildCheckFilter(item.filters, sourceLayer)
+        const isMatchedByFiltersFn = buildFilterMatch(item.filters, sourceLayer)
+        const exceptionIds = R.isArrayLike(item.exceptions) ? item.exceptions.map(x => x.featureId) : null
+        const isExceptionFn = feature => exceptionIds && exceptionIds.includes(feature.id)
 
         features
           .filter(feature => feature.properties.layer_key === sourceLayerKey)
-          .filter(checkFilterFn)
+          .filter(feature => isMatchedByFiltersFn(feature) || isExceptionFn(feature))
           .forEach((feature) => {
             const virtualFeature = buildVirtualFeature(feature, item, index)
             newState[virtualFeature.id] = virtualFeature
