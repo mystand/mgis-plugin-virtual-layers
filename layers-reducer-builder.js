@@ -15,8 +15,10 @@ export function buildLayersReducer(previousReducer) {
       config.properties.items.forEach((item) => {
         const sourceLayer = state[item.sourceLayerKey]
         const targetLayer = state[item.targetLayerKey]
-        const visibleFields = item.fields
 
+        if (R.isNil(sourceLayer) || R.isNil(targetLayer)) return
+
+        const visibleFields = item.fields
         newState[targetLayer.key] = {
           ...targetLayer,
           geometry_type: sourceLayer.geometry_type,
