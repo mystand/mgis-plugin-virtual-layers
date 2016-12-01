@@ -15,8 +15,7 @@ export function buildLayersReducer(previousReducer) {
       config.properties.items.forEach((item) => {
         const sourceLayer = state[item.sourceLayerKey]
         const targetLayer = state[item.targetLayerKey]
-
-        if (R.isNil(sourceLayer) || R.isNil(targetLayer)) return
+        if (R.isNil(sourceLayer) || R.isNil(targetLayer)) return // todo как нибудь валидировать
 
         const visibleFields = item.fields
         newState[targetLayer.key] = {

@@ -41,6 +41,7 @@ export function buildFeaturesReducer(previousReducer) {
       items.forEach((item, index) => {
         const { sourceLayerKey } = item
         const sourceLayer = R.find(layer => layer.key === sourceLayerKey, action.data.layers)
+        if (R.isNil(sourceLayer)) return // todo как нибудь валидировать
         const isMatchedByFiltersFn = buildFilterMatch(item.filters, sourceLayer)
         const exceptionIds = R.isArrayLike(item.exceptions) ? item.exceptions.map(x => x.featureId) : null
         const isExceptionFn = feature => exceptionIds && exceptionIds.includes(feature.id)
