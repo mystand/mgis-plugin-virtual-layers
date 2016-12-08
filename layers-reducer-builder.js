@@ -22,7 +22,10 @@ export function buildLayersReducer(previousReducer) {
           ...targetLayer,
           geometry_type: sourceLayer.geometry_type,
           geometry_options: sourceLayer.geometry_options,
-          attributes: R.pick(visibleFields, sourceLayer.attributes),
+          attributes: {
+            ...R.pick(visibleFields, sourceLayer.attributes),
+            ...targetLayer.attributes
+          },
           order: parseInt(targetLayer.order, 10) || sourceLayer.order + 1
         }
       })

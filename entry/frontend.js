@@ -12,8 +12,6 @@ function buildFieldsOptions(options) {
   return R.keys(attributes).map(key => ({ value: key, label: attributes[key].label }))
 }
 
-// function buildExceptiFeatures
-
 const OPERATIONS_SELECT_OPTIONS = [
   { value: '!=', label: '!=' },
   { value: '==', label: '==' },
@@ -23,49 +21,53 @@ const OPERATIONS_SELECT_OPTIONS = [
 ]
 
 export default {
-  name: 'Virtual Layers',
-  options: [
-    {
-      key: 'items',
-      label: 'Виртуальные слои',
-      type: 'array',
-      item: {
-        fields: [
-          { key: 'sourceLayerKey', label: 'Исходный слой', type: 'select', options: 'layers' },
-          { key: 'targetLayerKey', label: 'Слой назначения', type: 'select', options: 'layers' },
-          { key: 'fields', label: 'Отображаемые поля', type: FieldsInput },
-          {
-            key: 'filters',
-            label: 'Условия',
-            type: 'array',
-            item: {
-              fields: [
-                { key: 'property', label: 'Поле', type: 'select', options: buildFieldsOptions },
-                { key: 'operator', label: 'Оператор', type: 'select', options: OPERATIONS_SELECT_OPTIONS },
-                { key: 'value', label: 'Значение', type: 'string' }
-              ]
+  form: {
+    fields: [
+      {
+        key: 'items',
+        label: 'Виртуальные слои',
+        input: 'array',
+        item: {
+          fields: [
+            { key: 'sourceLayerKey', label: 'Исходный слой', input: 'select', inputOptions: { options: 'layers' } },
+            { key: 'targetLayerKey', label: 'Слой назначения', input: 'select', inputOptions: { options: 'layers' } },
+            { key: 'fields', label: 'Отображаемые поля', input: FieldsInput },
+            {
+              key: 'filters',
+              label: 'Условия',
+              input: 'array',
+              item: {
+                fields: [
+                  { key: 'property', label: 'Поле', input: 'select', inputOptions: { options: buildFieldsOptions } },
+                  {
+                    key: 'operator',
+                    label: 'Оператор',
+                    input: 'select',
+                    inputOptions: { options: OPERATIONS_SELECT_OPTIONS }
+                  },
+                  { key: 'value', label: 'Значение', input: 'string' }
+                ]
+              }
+            },
+            {
+              key: 'exceptions',
+              label: 'Исключения',
+              input: 'array',
+              item: {
+                fields: [
+                  { key: 'featureId', label: 'Id объекта', input: 'string' }
+                ]
+              }
             }
-          },
-          {
-            key: 'exceptions',
-            label: 'Исключения',
-            type: 'array',
-            item: {
-              fields: [
-                { key: 'featureId', label: 'Id объекта', type: 'string' }
-              ]
-            }
-          }
-        ]
+          ]
+        }
       }
-    }
-  ],
-  connects: {
-    saga,
-    middleware,
-    replaceReducers: [
-      { replacer: buildLayersReducer, path: ['layers'] },
-      { replacer: buildFeaturesReducer, path: ['features'] }
     ]
-  }
+  },
+  saga,
+  middleware,
+  replaceReducers: [
+    { replacer: buildLayersReducer, path: ['layers'] },
+    { replacer: buildFeaturesReducer, path: ['features'] }
+  ]
 }
